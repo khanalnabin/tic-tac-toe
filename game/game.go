@@ -4,6 +4,7 @@ import (
 	"github.com/veandco/go-sdl2/gfx"
 	"github.com/veandco/go-sdl2/img"
 	"github.com/veandco/go-sdl2/sdl"
+	"github.com/veandco/go-sdl2/ttf"
 )
 
 func (game *Game) Initialize() (err error) {
@@ -171,12 +172,83 @@ func (grid *GameGrid) CheckLogic() {
 func (game *Game) Render() (err error) {
 	game.Renderer.SetDrawColor(0, 0, 0, 0)
 	game.Renderer.Clear()
-	if err = game.renderTitle(); err != nil {
+	if err = game.renderTitleText(); err != nil {
 		return
 	}
 	game.renderGrid()
-	game.renderExtra()
+	game.renderExtraText()
 	game.Renderer.Present()
+	return
+}
+func (game *Game) renderTitleText() (err error) {
+	err = ttf.Init()
+	if err != nil {
+		return
+	}
+	defer ttf.Quit()
+	font, err := ttf.OpenFont("assets/test.ttf", 50)
+	if err != nil {
+		return
+	}
+	defer font.Close()
+	text, err := font.RenderUTF8Blended("Tic Tac Toe", sdl.Color{R: 255, G: 255, B: 0, A: 0})
+	if err != nil {
+		return
+	}
+	defer text.Free()
+	texture, err := game.Renderer.CreateTextureFromSurface(text)
+	if err != nil {
+		return
+	}
+	defer texture.Destroy()
+	src := sdl.Rect{X: 0, Y: 0, W: text.W, H: text.H}
+	dest := sdl.Rect{X: (game.Width - text.W) / 2, Y: (game.Grid.PosY - text.H) / 2, W: text.W, H: text.H}
+	game.Renderer.Copy(texture, &src, &dest)
+	return
+}
+
+func (game *Game) renderExtraText() (err error) {
+	err = ttf.Init()
+	if err != nil {
+		return
+	}
+	defer ttf.Quit()
+	font, err := ttf.OpenFont("assets/test.ttf", 50)
+	if err != nil {
+		return
+	}
+	defer font.Close()
+	var str string
+
+	if game.Grid.State == Running {
+		if game.Grid.Turn == PlayerX {
+			str = "X's Turn"
+		} else {
+			str = "O's Turn"
+		}
+	} else if game.Grid.State == Draw {
+		str = "Draw"
+	} else {
+		if game.Grid.State == XWon {
+			str = "X Wins"
+		} else {
+			str = "O Wins"
+		}
+	}
+	text, err := font.RenderUTF8Blended(str, sdl.Color{R: 255, G: 255, B: 0, A: 0})
+	if err != nil {
+		return
+	}
+	defer text.Free()
+	texture, err := game.Renderer.CreateTextureFromSurface(text)
+	if err != nil {
+		return
+	}
+	defer texture.Destroy()
+	src := sdl.Rect{X: 0, Y: 0, W: text.W, H: text.H}
+	dest := sdl.Rect{X: (game.Width - text.W) / 2, Y: game.Grid.PosY + game.Grid.Height + (game.Grid.PosY-text.H)/2, W: text.W, H: text.H}
+	game.Renderer.Copy(texture, &src, &dest)
+
 	return
 }
 
@@ -188,12 +260,12 @@ func (game *Game) renderExtra() (err error) {
 		} else {
 			filename = "assets/o_turn.png"
 		}
-	}else if game.Grid.State == Draw{
+	} else if game.Grid.State == Draw {
 		filename = "assets/draw.png"
-	}else{
-		if game.Grid.State == XWon{
+	} else {
+		if game.Grid.State == XWon {
 			filename = "assets/x_wins.png"
-		}else{
+		} else {
 			filename = "assets/o_wins.png"
 		}
 	}
