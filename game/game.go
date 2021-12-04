@@ -7,6 +7,8 @@ import (
 	"github.com/veandco/go-sdl2/ttf"
 )
 
+var fontPath string = "/usr/share/fonts/ttf-mononoki/mononoki-Regular.ttf"
+
 func (game *Game) Initialize() (err error) {
 	if err != nil {
 		return
@@ -186,7 +188,7 @@ func (game *Game) renderTitleText() (err error) {
 		return
 	}
 	defer ttf.Quit()
-	font, err := ttf.OpenFont("assets/test.ttf", 50)
+	font, err := ttf.OpenFont(fontPath, 50)
 	if err != nil {
 		return
 	}
@@ -213,7 +215,7 @@ func (game *Game) renderExtraText() (err error) {
 		return
 	}
 	defer ttf.Quit()
-	font, err := ttf.OpenFont("assets/test.ttf", 50)
+	font, err := ttf.OpenFont(fontPath, 50)
 	if err != nil {
 		return
 	}
