@@ -7,6 +7,7 @@ import (
 type Player = int8
 type Cell = int8
 type GameState = int8
+type Mode = int8
 
 const (
 	PlayerX Player = iota
@@ -26,19 +27,24 @@ const (
 	O
 )
 
+const (
+	Single Mode = iota
+	Multi
+)
+
 type GameGrid struct {
-	Array       [3][3]int8
-	Multiplayer bool
-	Turn        Player
-	State       GameState
-	CellCount   int32
-	Width       int32
-	Height      int32
-	CellHeight  int32
-	CellWidth   int32
-	PosX        int32
-	PosY        int32
-	EndIndex    [2]int32
+	Array      [3][3]int8
+	Mode       Mode
+	Turn       Player
+	State      GameState
+	CellCount  int32
+	Width      int32
+	Height     int32
+	CellHeight int32
+	CellWidth  int32
+	PosX       int32
+	PosY       int32
+	EndIndex   [2]int32
 }
 
 type Game struct {
@@ -48,7 +54,8 @@ type Game struct {
 	Mouse    *Mouse
 	Height   int32
 	Width    int32
-	Running  bool 
+	Running  bool
+	Selected bool
 }
 
 type Mouse struct {
