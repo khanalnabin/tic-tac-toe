@@ -10,7 +10,7 @@ import (
 	"github.com/veandco/go-sdl2/ttf"
 )
 
-var fontPath string = "/usr/share/fonts/ttf-mononoki/mononoki-Regular.ttf"
+var fontPath string = "assets/fonts/font.ttf"
 
 func (game *Game) Initialize() (err error) {
 	if err != nil {
@@ -88,6 +88,7 @@ func (game *Game) HandleEvents() (err error) {
 					}
 				case sdl.K_RETURN:
 					if !game.Selected {
+						game.Mouse.Clicked = false
 						game.Selected = true
 
 					}
